@@ -3,7 +3,7 @@
 
 Copyright © 2022 KTY(kongtianyi@foxmail.com)
 
-Project Url: https://github.com/kongtianyi/alfred-timestamp/blob/main/README.md
+Project Url: https://github.com/kongtianyi/alfred-timeconvertor
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
