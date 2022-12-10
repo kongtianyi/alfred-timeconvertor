@@ -1,7 +1,7 @@
 # alfred-timestamp
 An alfred workflow that deal with timestamp convert, including i18n features.
 
-Workflow file are in the repo's root derictory, named `Timestamp I18N.alfredworkflow`. You can just download it on your mac and double click to install.
+Workflow file is in the repo's root derictory, named `Timestamp I18N.alfredworkflow`. You can just download it on your mac and double click to install.
 
 ## Input Format
 ```
