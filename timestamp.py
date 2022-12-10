@@ -3,17 +3,18 @@
 
 import os
 import sys
+import pytz
+import time
 from workflow import Workflow3
-from datetime import datetime, timedelta, timezone
+from datetime import datetime
 
 
-def main(wf:Workflow3):
-    result = []
+def main(wf):
     query = wf.args[0]
-    query_time, _timezone = parse_input(query)
+    query_time, _timezone, timezone_offset = parse_input(query)
 
     if query_time == 'now':
-        now_timestamp = int(datetime.now().timestamp())
+        now_timestamp = int(time.time())
         append_timestamp_result(wf, now_timestamp)
         time_result = format_timestamp(now_timestamp, _timezone)
         append_datetime_result(wf, time_result)
@@ -26,23 +27,22 @@ def main(wf:Workflow3):
             time_data = datetime.strptime(query_time, "%Y-%m-%d %H:%M:%S")
         else:
             time_data = datetime.strptime(query_time, "%Y-%m-%d")
-        time_data = time_data.replace(tzinfo=_timezone)
-        time_result = int(time_data.timestamp())
+        time_result = int(convert_datetime_to_timestamp_with_timezone_offset(time_data, timezone_offset))
         append_timestamp_result(wf, time_result)
-    return result
+    wf.send_feedback()
 
 
-def append_datetime_result(wf: Workflow3, time_result: str):
+def append_datetime_result(wf, time_result):
     title = 'datetime: %s' % (time_result,)
-    wf.add_item(title=title)
+    wf.add_item(title=title, arg=time_result, valid=True)
 
 
-def append_timestamp_result(wf: Workflow3, timestamp: int):
+def append_timestamp_result(wf, timestamp):
     title = '{}: {}'.format('timestamp', timestamp)
-    wf.add_item(title=title)
+    wf.add_item(title=title, arg=timestamp, valid=True)
 
 
-def parse_input(key: str) -> (str, timezone):
+def parse_input(key):
     input = key.strip()
     params = input.split(' ', 1)
     is_set_timezone = len(params) == 2 and params[0].startswith('utc')
@@ -51,15 +51,17 @@ def parse_input(key: str) -> (str, timezone):
         aimed_timezone_offset = 0
         if len(aimed_timezone_str) > 3:
             aimed_timezone_offset = int(aimed_timezone_str[3:])
-        used_timezone = timezone(timedelta(hours=aimed_timezone_offset))
+        used_timezone = pytz.FixedOffset(aimed_timezone_offset * 60)
+        timezone_offset = aimed_timezone_offset * 60 * 60
         query_time = params[1]
     else:
         used_timezone = None
         query_time = input
-    return query_time, used_timezone
+        timezone_offset = get_local_offset_from_utc()
+    return query_time, used_timezone, timezone_offset
 
 
-def format_timestamp(timestamp: int, _timezone: timezone) -> str:
+def format_timestamp(timestamp, _timezone):
     return datetime.fromtimestamp(timestamp, tz=_timezone).strftime("%Y-%m-%d %H:%M:%S")
 
 
@@ -68,7 +70,7 @@ def copy_to_clipboard(value):
     os.system(command)
 
 
-def is_timestamp(value: str) -> bool:
+def is_timestamp(value):
     strlen = len(value)
     '''support 10 or 13 length unixtime |支持10位或者13位unixtime'''
     if strlen != 10 and strlen != 13:
@@ -80,12 +82,21 @@ def is_timestamp(value: str) -> bool:
     return True
 
 
-def parse_timestamp(value: str) -> int:
+def parse_timestamp(value):
     data = int(value)
     strlen = len(value)
     if strlen == 13:
         data = data / 1000.0
     return data
+
+
+def convert_datetime_to_timestamp_with_timezone_offset(_datetime, offset_second):
+    return time.mktime(_datetime.timetuple()) + get_local_offset_from_utc() - offset_second
+
+
+def get_local_offset_from_utc():
+    now = time.time()
+    return (datetime.fromtimestamp(now) - datetime.utcfromtimestamp(now)).total_seconds()
 
 
 if __name__ == '__main__':
