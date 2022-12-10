@@ -1,5 +1,5 @@
 # alfred-timestamp
-A alfred workflow to deal with timestamp convert, including i18n features.
+An alfred workflow that deal with timestamp convert, including i18n features.
 
 Workflow file are in the repo's root derictory, named `Timestamp I18N.alfredworkflow`.
 
