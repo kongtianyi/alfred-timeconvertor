@@ -1,7 +1,7 @@
 # alfred-timeconvertor
 An alfred workflow that do time convert, including i18n features.
 
-Workflow file is in the repo's root derictory, named `Time Convertor.alfredworkflow`. You can just download it on your mac and double click to install.
+Workflow file is in the repo's release space, [click here](https://github.com/kongtianyi/alfred-timeconvertor/releases/tag/v1.1.0).
 
 ## Input Format
 ```
