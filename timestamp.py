@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 
 
-import os
 import sys
 import pytz
 import time
@@ -123,11 +122,6 @@ def get_utc_offset_hour(tz):
 
 def format_timestamp(timestamp, _timezone=None):
     return datetime.fromtimestamp(timestamp, tz=_timezone).strftime("%Y-%m-%d %H:%M:%S")
-
-
-def copy_to_clipboard(value):
-    command = 'echo ' + str(value).strip() + '| clip'
-    os.system(command)
 
 
 def is_timestamp(value):
