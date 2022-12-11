@@ -70,7 +70,7 @@ def main(wf):
         time_data = datetime.strptime(query_datetime, "%Y-%m-%d %H:%M:%S")
         timestamp = int(
             convert_datetime_to_timestamp_with_timezone_offset(time_data, from_timezone.get_offset_second()))
-        append_timestamp_result(wf, timestamp)
+        add_item(wf, TIMESTAMP, timestamp)
         for _timezone in timezone_list:
             time_result = format_timestamp(timestamp, _timezone.timezone)
             add_item(wf, _timezone.name, time_result)
@@ -82,11 +82,6 @@ def main(wf):
 def add_item(wf, prefix, result):
     title = '{}: {}'.format(prefix, result)
     wf.add_item(title=title, arg=result, valid=True)
-
-
-def append_timestamp_result(wf, timestamp):
-    title = '{}: {}'.format('timestamp', timestamp)
-    wf.add_item(title=title, arg=timestamp, valid=True)
 
 
 def parse_input(key):
